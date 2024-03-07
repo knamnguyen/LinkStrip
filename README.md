@@ -1,4 +1,4 @@
-# <img src="public/icons/icon_48.png" width="45" align="left"> Secretgpt2
+# <img src="public/icons/ls-icon-32x32.png" width="45" align="left"> LinkStrip
 
 My Chrome Extension
 
@@ -18,4 +18,3 @@ Suggestions and pull requests are welcomed!.
 ---
 
 This project was bootstrapped with [Chrome Extension CLI](https://github.com/dutiyesh/chrome-extension-cli)
-
