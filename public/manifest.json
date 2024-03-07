@@ -1,33 +1,43 @@
 {
   "manifest_version": 3,
-  "name": "Secretgpt2",
+  "name": "LinkStrip",
   "version": "0.1.0",
-  "description": "My Chrome Extension",
+  "description": "Strip the sh*t from your LinkedIn feed",
   "icons": {
-    "16": "icons/icon_16.png",
-    "32": "icons/icon_32.png",
-    "48": "icons/icon_48.png",
-    "128": "icons/icon_128.png"
+    "16": "icons/ls-icon-16x16.png",
+    "32": "icons/ls-icon-32x32.png",
+    "128": "icons/ls-icon-192x192.png"
   },
   "background": {
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "Secretgpt2",
-    "default_popup": "popup.html"
+    "default_title": "LinkStrip",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/ls-icon-16x16.png",
+      "32": "icons/ls-icon-32x32.png"
+    }
   },
   "permissions": [
-    "storage"
+    "storage",
+    "activeTab",
+    "debugger",
+    "tabs",
+    "scripting",
+    "webNavigation"
   ],
   "content_scripts": [
     {
-      "matches": [
-        "<all_urls>"
-      ],
+      "matches": ["https://www.linkedin.com/feed/*"],
       "run_at": "document_idle",
-      "js": [
-        "contentScript.js"
-      ]
+      "js": ["contentScript.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/ls-icon-512x512.png"],
+      "matches": ["https://www.linkedin.com/*"]
     }
   ]
 }
