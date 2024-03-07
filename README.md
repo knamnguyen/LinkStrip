@@ -1,4 +1,4 @@
-# <img src="public/icons/ls-icon-32x32.png" width="45" align="left"> LinkStrip
+# <img src="public/icons/ls-icon-32x32.png" width="45" align="left" style="background-color: white"> LinkStrip
 
 My Chrome Extension
 
