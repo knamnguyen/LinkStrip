@@ -1,4 +1,8 @@
 'use strict';
+const { argv } = require('yargs');
+const mode = argv.mode;
+module.exports = { mode };
+
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -41,7 +45,9 @@ const common = {
           loader: 'babel-loader',
           options: {
             presets: ['@babel/preset-react'],
-            plugins: [require.resolve('react-refresh/babel')],
+            plugins: [
+              ...(mode === 'development' ? ['react-refresh/babel'] : []),
+            ],
           },
         },
       },

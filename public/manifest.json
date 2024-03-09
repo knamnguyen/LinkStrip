@@ -19,14 +19,7 @@
       "32": "icons/ls-icon-32x32.png"
     }
   },
-  "permissions": [
-    "storage",
-    "activeTab",
-    "debugger",
-    "tabs",
-    "scripting",
-    "webNavigation"
-  ],
+  "permissions": ["storage", "tabs"],
   "content_scripts": [
     {
       "matches": ["https://www.linkedin.com/feed/*"],
