@@ -1,4 +1,4 @@
-'use strict';
+// 'use strict';
 
 import React, { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -93,15 +93,31 @@ const Popup = () => {
           <div className="mt-4"></div>
           <CommandDemo />
         </div>
-        <Accordion type="single" collapsible className="self-start">
+        <Accordion
+          type="single"
+          collapsible
+          className="self-start whitespace-pre-wrap"
+        >
           <AccordionItem value="item-1">
             <AccordionTrigger>Note/Update</AccordionTrigger>
-            <AccordionContent>
-              Note: Sometimes, it feels like LinkStrip makes LinkedIn loads
-              slower. But it's usually because there's no more posts to load
-              that meets the criteria, and LinkedIn is trying to fetch more
-              posts. If you see too few posts loaded, try using more flexible
-              filters.
+            <AccordionContent className="whitespace-break-spaces">
+              - If you see too few posts loaded, try using more flexible
+              filters. <br />
+              <br />- For filter tag Include/Exclude, try to always use mode OR.{' '}
+              <br />
+              <br />- For filter tags Include, try to define as many relevant
+              tags as possible.
+              <br />
+              <br />- For filter tags Exclude, try to define as few tags as
+              possible. <br />
+              <br />- Sometimes, it feels like LinkStrip makes LinkedIn loads
+              slower.But it's usually because there's no more posts to load that
+              meets the criteria, and LinkedIn is trying to fetch more posts.
+              <br />
+              <br />- I don't recommend using Include tag filters with only a
+              few keywords and mode AND. This will make the filter very
+              aggressive and hide most posts, causing the feed to be empty. If
+              you think this is nice, then good.
             </AccordionContent>
           </AccordionItem>
         </Accordion>
