@@ -1,9 +1,17 @@
+'use strict';
+
 import activateButton from '../utils/activateButton.js';
 import deactivateButton from '../utils/deactivateButton.js';
 import createButton from '../utils/createButton.js';
 import createDivider from '../utils/createDivider.js';
 import generatePastelColor from '../utils/generatePastelColor.js';
-// import { loadTags, saveTag, deleteTag } from '../utils/tagHandlers.js';
+
+import {
+  hideTagToExcludeOr,
+  hideTagToExcludeAnd,
+  showTagToExcludeOr,
+  showTagToExcludeAnd,
+} from '../filterFunction/hidePostExclude.js';
 
 export default async function addTagFilterExclude(container) {
   if (!container) return;
@@ -25,7 +33,6 @@ export default async function addTagFilterExclude(container) {
     tag.style.fontWeight = '450';
     tag.style.lineHeight = '120%';
     tag.style.color = 'black';
-
 
     // Update the tag background color to use pastel colors
     tag.style.background = generatePastelColor();
@@ -88,12 +95,14 @@ export default async function addTagFilterExclude(container) {
     removeButton.addEventListener('click', function () {
       tagContainer.removeChild(tag);
       deleteTag(text, 'excludeTags');
+      // checkButtonStatesForObservers();
     });
 
     tag.appendChild(span);
     tag.appendChild(removeButton);
 
     saveTag(text, 'excludeTags');
+    // checkButtonStatesForObservers();
     return tag;
   }
 
@@ -180,6 +189,8 @@ export default async function addTagFilterExclude(container) {
         tagContainer.appendChild(tagElement);
       });
       tagContainer.appendChild(inputField);
+      const isTagListChanged = false;
+      checkButtonStatesForObservers(isTagListChanged);
     });
   }
 
@@ -190,6 +201,8 @@ export default async function addTagFilterExclude(container) {
         updatedTags.push(tagText);
         chrome.storage.local.set({ excludeTags: updatedTags }, function () {
           console.log('Tag saved:', tagText);
+          const isTagListChanged = true;
+          checkButtonStatesForObservers(isTagListChanged);
         });
       }
     });
@@ -200,6 +213,8 @@ export default async function addTagFilterExclude(container) {
       const updatedTags = result.excludeTags.filter((t) => t !== tagText);
       chrome.storage.local.set({ excludeTags: updatedTags }, function () {
         console.log('Tag deleted:', tagText);
+        const isTagListChanged = true;
+        checkButtonStatesForObservers(isTagListChanged);
       });
     });
   }
@@ -267,6 +282,9 @@ export default async function addTagFilterExclude(container) {
       } else {
         deactivateButton(button);
       }
+
+      const isTagListChanged = false;
+      checkButtonStatesForObservers(isTagListChanged);
     });
   }
 
@@ -318,5 +336,145 @@ function handleClickFilter(mode) {
     activateButton(offButton);
   } else {
     deactivateButton(offButton);
+  }
+
+  const isTagListChanged = false;
+  checkButtonStatesForObservers(isTagListChanged);
+}
+
+// Define observers globally to manage them easily
+let andObserver = null;
+let orObserver = null;
+// let bannerObserver = null;
+
+// Function to start observing changes for ads, companies, and banners
+function startObservers(mode) {
+  //get parent of the feed
+  const feedParent = document.querySelector('.scaffold-finite-scroll__content');
+
+  const config = { childList: true, subtree: true };
+
+  var excludeTagsList = null;
+  // const excludeTagsList = chrome.storage.local.get({ excludeTags: [] });
+  chrome.storage.local.get({ excludeTags: [] }, function (result) {
+    excludeTagsList = result.excludeTags;
+    console.log('excludeTagsList', excludeTagsList);
+    if (!andObserver && mode === 'tag-filter-and-exclude') {
+      hideTagToExcludeAnd(feedParent, excludeTagsList);
+      andObserver = new MutationObserver((mutations) => {
+        hideTagToExcludeAnd(feedParent, excludeTagsList);
+      });
+      andObserver.observe(document.body, config);
+    }
+
+    if (!orObserver && mode === 'tag-filter-or-exclude') {
+      hideTagToExcludeOr(feedParent, excludeTagsList);
+      orObserver = new MutationObserver((mutations) => {
+        hideTagToExcludeOr(feedParent, excludeTagsList);
+      });
+      orObserver.observe(document.body, config);
+    }
+  });
+
+  console.log('observers STARTED:', mode);
+}
+
+// Function to stop all observers
+function stopObservers(mode) {
+  //get parent of the feed
+  const feedParent = document.querySelector('.scaffold-finite-scroll__content');
+  console.log('andObserver', andObserver);
+  console.log('orObserver', orObserver);
+
+  if (mode === 'tag-filter-and-exclude') {
+    showTagToExcludeAnd(feedParent);
+    if (andObserver) {
+      andObserver.disconnect();
+      andObserver = null;
+    }
+  }
+
+  if (mode === 'tag-filter-or-exclude') {
+    showTagToExcludeOr(feedParent);
+
+    if (orObserver) {
+      orObserver.disconnect();
+      orObserver = null;
+    }
+  }
+
+  if (mode === 'tag-filter-button-exclude-off') {
+    showTagToExcludeAnd(feedParent);
+    showTagToExcludeOr(feedParent);
+    if (andObserver) {
+      andObserver.disconnect();
+      andObserver = null;
+    }
+
+    if (orObserver) {
+      orObserver.disconnect();
+      orObserver = null;
+    }
+  }
+
+  console.log('observers STOPPED:', mode);
+}
+
+function checkButtonStatesForObservers(isTagListChanged) {
+  const filterTagButtonAndActive = document
+    .getElementById('tag-filter-and-exclude')
+    .getAttribute('active');
+  const filterTagButtonOrActive = document
+    .getElementById('tag-filter-or-exclude')
+    .getAttribute('active');
+  const filterTagButtonOffActive = document
+    .getElementById('tag-filter-button-exclude-off')
+    .getAttribute('active');
+
+  console.log('filterTagButtonAndActive', filterTagButtonAndActive);
+  console.log('filterTagButtonOrActive', filterTagButtonOrActive);
+  console.log('filterTagButtonOffActive', filterTagButtonOffActive);
+
+  console.log(filterTagButtonAndActive === 'true');
+  console.log(filterTagButtonOrActive === 'true');
+  console.log(filterTagButtonOffActive === 'true');
+
+  const feedParent = document.querySelector('.scaffold-finite-scroll__content');
+
+  //undo previous observers to get ready for new ones
+  //when taglist is changed, need to stop previous observer to redo new one
+  if (isTagListChanged) {
+    showTagToExcludeAnd(feedParent);
+    showTagToExcludeOr(feedParent);
+    stopObservers('tag-filter-and-exclude');
+    stopObservers('tag-filter-or-exclude');
+    console.log('tag list changed');
+  } else {
+    console.log('tag list not changed');
+  }
+
+  if (filterTagButtonOffActive === 'true') {
+    //Shut down all filters and observers
+    stopObservers('tag-filter-button-exclude-off');
+  }
+
+  if (filterTagButtonAndActive === 'true') {
+    //activate ad filter
+    startObservers('tag-filter-and-exclude');
+  } else {
+    //deactivate ad filter
+    stopObservers('tag-filter-and-exclude');
+  }
+
+  if (filterTagButtonOrActive === 'true') {
+    console.log(
+      '🚀 ~ checkButtonStatesForObservers ~ filterTagButtonOrActive:',
+      filterTagButtonOrActive
+    );
+    //activate company filter
+    startObservers('tag-filter-or-exclude');
+  } else {
+    //deactivate company filter
+    stopObservers('tag-filter-or-exclude');
   }
 }

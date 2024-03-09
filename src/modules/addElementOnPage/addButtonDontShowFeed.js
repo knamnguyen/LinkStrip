@@ -88,6 +88,7 @@ export default function addButtonDontShowFeed(container) {
         checkButtonStatesForObservers();
       } else {
         deactivateButton(button);
+        checkButtonStatesForObservers();
       }
     });
   }
@@ -195,9 +196,7 @@ let bannerObserver = null;
 // Function to start observing changes for ads, companies, and banners
 function startObservers(mode) {
   //get parent of the feed
-  const feedParent = document.getElementsByClassName(
-    'scaffold-finite-scroll__content'
-  )[0];
+  const feedParent = document.querySelector('.scaffold-finite-scroll__content');
 
   const config = { childList: true, subtree: true };
 
@@ -234,9 +233,7 @@ function startObservers(mode) {
 // Function to stop all observers
 function stopObservers(mode) {
   //get parent of the feed
-  const feedParent = document.getElementsByClassName(
-    'scaffold-finite-scroll__content'
-  )[0];
+  const feedParent = document.querySelector('.scaffold-finite-scroll__content');
 
   if (adObserver && mode === 'hide-button-ad') {
     adObserver.disconnect();

@@ -37,10 +37,8 @@ export function showTime60min(feedParent) {
   );
 
   childDivs.forEach((div) => {
-    if (div.className === 'not-60m-so-hidden') {
-      div.hidden = false;
-      div.className = '';
-    }
+    div.hidden = false;
+    div.className = '';
   });
 }
 
@@ -92,10 +90,8 @@ export function showTime12h(feedParent) {
   if (!childDivs) return;
 
   childDivs.forEach((div) => {
-    if (div.className === 'not-12h-so-hidden') {
-      div.hidden = false;
-      div.className = '';
-    }
+    div.hidden = false;
+    div.className = '';
   });
 }
 
@@ -148,9 +144,7 @@ export function showTime1day(feedParent) {
   if (!childDivs) return;
 
   childDivs.forEach((div) => {
-    if (div.className === 'not-24h-so-hidden') {
-      div.hidden = false;
-      div.className = '';
-    }
+    div.hidden = false;
+    div.className = '';
   });
 }

@@ -87,11 +87,12 @@ export default function addButtonFilterFeed(container) {
       const button = document.getElementById(id);
       if (result[id]) {
         activateButton(button);
+        checkButtonStatesForObservers();
         // activate initial observers
         //get saved states of the buttons
-        checkButtonStatesForObservers();
       } else {
         deactivateButton(button);
+        checkButtonStatesForObservers();
       }
     });
   }
@@ -173,9 +174,7 @@ function startObservers(mode) {
   const config = { childList: true, subtree: true };
 
   //get parent of the feed
-  const feedParent = document.getElementsByClassName(
-    'scaffold-finite-scroll__content'
-  )[0];
+  const feedParent = document.querySelector('.scaffold-finite-scroll__content');
 
   // Observer for ads
   if (!min60Observer && mode === 'filter-button-last-60') {
@@ -210,9 +209,7 @@ function startObservers(mode) {
 // Function to stop all observers
 function stopObservers(mode) {
   //get parent of the feed
-  const feedParent = document.getElementsByClassName(
-    'scaffold-finite-scroll__content'
-  )[0];
+  const feedParent = document.querySelector('.scaffold-finite-scroll__content');
 
   if (min60Observer && mode === 'filter-button-last-60') {
     min60Observer.disconnect();

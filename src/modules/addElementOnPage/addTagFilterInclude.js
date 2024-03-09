@@ -1,8 +1,17 @@
+'use strict';
+
 import activateButton from '../utils/activateButton.js';
 import deactivateButton from '../utils/deactivateButton.js';
 import createButton from '../utils/createButton.js';
 import createDivider from '../utils/createDivider.js';
 import generatePastelColor from '../utils/generatePastelColor.js';
+
+import {
+  hideTagToIncludeOr,
+  hideTagToIncludeAnd,
+  showTagToIncludeOr,
+  showTagToIncludeAnd,
+} from '../filterFunction/hidePostInclude.js';
 
 //import icon for extension
 const iconPath = chrome.runtime.getURL('icons/ls-icon-512x512.png');
@@ -27,9 +36,6 @@ export default async function addTagFilterInclude(container) {
     tag.style.fontWeight = '450';
     tag.style.lineHeight = '120%';
     tag.style.color = 'black';
-    //   tag.style.background = `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(
-    //     Math.random() * 256
-    //   )}, ${Math.floor(Math.random() * 256)}, 0.6)`;
 
     // Update the tag background color to use pastel colors
     tag.style.background = generatePastelColor();
@@ -91,13 +97,13 @@ export default async function addTagFilterInclude(container) {
     svg.appendChild(polygon);
     removeButton.addEventListener('click', function () {
       tagContainer.removeChild(tag);
-      deleteTag(text);
+      deleteTag(text, 'includeTags');
     });
 
     tag.appendChild(span);
     tag.appendChild(removeButton);
 
-    saveTag(text);
+    saveTag(text, 'includeTags');
     return tag;
   }
 
@@ -165,7 +171,7 @@ export default async function addTagFilterInclude(container) {
   });
 
   //load tags from storage
-  loadTags();
+  loadTags('includeTags', tagContainer, inputField);
   mainContainer.appendChild(tagContainer);
 
   // Prepend the main container as the first child of the second '.scaffold-layout__sticky-content' element
@@ -183,6 +189,8 @@ export default async function addTagFilterInclude(container) {
         tagContainer.appendChild(tagElement);
       });
       tagContainer.appendChild(inputField);
+      const isTagListChanged = false;
+      checkButtonStatesForObservers(isTagListChanged);
     });
   }
 
@@ -193,6 +201,8 @@ export default async function addTagFilterInclude(container) {
         updatedTags.push(tagText);
         chrome.storage.local.set({ includeTags: updatedTags }, function () {
           console.log('Tag saved:', tagText);
+          const isTagListChanged = true;
+          checkButtonStatesForObservers(isTagListChanged);
         });
       }
     });
@@ -203,6 +213,8 @@ export default async function addTagFilterInclude(container) {
       const updatedTags = result.includeTags.filter((t) => t !== tagText);
       chrome.storage.local.set({ includeTags: updatedTags }, function () {
         console.log('Tag deleted:', tagText);
+        const isTagListChanged = true;
+        checkButtonStatesForObservers(isTagListChanged);
       });
     });
   }
@@ -227,19 +239,19 @@ export default async function addTagFilterInclude(container) {
 
   // Create filter buttons
   var tagFilterButtonAnd = createButton(
-    'tag-filter-and',
+    'tag-filter-and-include',
     'AND',
     handleClickFilter
   );
   var dividerElement1 = createDivider();
   var tagFilterButtonOr = createButton(
-    'tag-filter-or',
+    'tag-filter-or-include',
     'OR',
     handleClickFilter
   );
   var dividerElement2 = createDivider();
   var filterButtonOff = createButton(
-    'tag-filter-button-off',
+    'tag-filter-button-include-off',
     'Off',
     handleClickFilter
   );
@@ -261,9 +273,9 @@ export default async function addTagFilterInclude(container) {
 
   // Load the saved states of the buttons
   const filterButtons = [
-    'tag-filter-and',
-    'tag-filter-or',
-    'tag-filter-button-off',
+    'tag-filter-and-include',
+    'tag-filter-or-include',
+    'tag-filter-button-include-off',
   ];
 
   for (const id of filterButtons) {
@@ -274,6 +286,9 @@ export default async function addTagFilterInclude(container) {
       } else {
         deactivateButton(button);
       }
+
+      const isTagListChanged = false;
+      checkButtonStatesForObservers(isTagListChanged);
     });
   }
 
@@ -305,18 +320,18 @@ export default async function addTagFilterInclude(container) {
 
 function handleClickFilter(mode) {
   const filterButtons = [
-    'tag-filter-and',
-    'tag-filter-or',
-    'tag-filter-button-off',
+    'tag-filter-and-include',
+    'tag-filter-or-include',
+    'tag-filter-button-include-off',
   ];
 
-  const offButton = document.getElementById('tag-filter-button-off');
+  const offButton = document.getElementById('tag-filter-button-include-off');
 
   for (const id of filterButtons) {
     const button = document.getElementById(id);
 
     if (id === mode) {
-      if (id === 'tag-filter-button-off') {
+      if (id === 'tag-filter-button-include-off') {
         // If 'off' button is clicked while active, do nothing
         if (!button.classList.contains('t-bold')) {
           activateButton(button);
@@ -337,7 +352,7 @@ function handleClickFilter(mode) {
 
   // After all buttons have been processed, check if 'off' button should be activated
   const anyButtonActive = filterButtons.some((id) => {
-    if (id === 'tag-filter-button-off') return false; // Ignore 'off' button in this check
+    if (id === 'tag-filter-button-include-off') return false; // Ignore 'off' button in this check
     const button = document.getElementById(id);
     return button.classList.contains('t-bold');
   });
@@ -346,5 +361,146 @@ function handleClickFilter(mode) {
     activateButton(offButton);
   } else {
     deactivateButton(offButton);
+  }
+
+  const isTagListChanged = false;
+  checkButtonStatesForObservers(isTagListChanged);
+}
+
+// Define observers globally to manage them easily
+let andObserver = null;
+let orObserver = null;
+// let bannerObserver = null;
+
+// Function to start observing changes for ads, companies, and banners
+function startObservers(mode) {
+  //get parent of the feed
+  const feedParent = document.querySelector('.scaffold-finite-scroll__content');
+
+  //might not need subtree true because we are only tracking if new posts are added
+  const config = { childList: true, subtree: true };
+
+  var includeTagsList = null;
+  // const includeTagsList = chrome.storage.local.get({ includeTags: [] });
+  chrome.storage.local.get({ includeTags: [] }, function (result) {
+    includeTagsList = result.includeTags;
+    console.log('includeTagsList', includeTagsList);
+    if (!andObserver && mode === 'tag-filter-and-include') {
+      hideTagToIncludeAnd(feedParent, includeTagsList);
+      andObserver = new MutationObserver((mutations) => {
+        hideTagToIncludeAnd(feedParent, includeTagsList);
+      });
+      andObserver.observe(document.body, config);
+    }
+
+    if (!orObserver && mode === 'tag-filter-or-include') {
+      hideTagToIncludeOr(feedParent, includeTagsList);
+      orObserver = new MutationObserver((mutations) => {
+        hideTagToIncludeOr(feedParent, includeTagsList);
+      });
+      orObserver.observe(document.body, config);
+    }
+  });
+
+  console.log('observers STARTED:', mode);
+}
+
+// Function to stop all observers
+function stopObservers(mode) {
+  //get parent of the feed
+  const feedParent = document.querySelector('.scaffold-finite-scroll__content');
+  console.log('andObserver', andObserver);
+  console.log('orObserver', orObserver);
+
+  if (mode === 'tag-filter-and-include') {
+    showTagToIncludeAnd(feedParent);
+    if (andObserver) {
+      andObserver.disconnect();
+      andObserver = null;
+    }
+  }
+
+  if (mode === 'tag-filter-or-include') {
+    showTagToIncludeOr(feedParent);
+
+    if (orObserver) {
+      orObserver.disconnect();
+      orObserver = null;
+    }
+  }
+
+  if (mode === 'tag-filter-button-include-off') {
+    showTagToIncludeAnd(feedParent);
+    showTagToIncludeOr(feedParent);
+    if (andObserver) {
+      andObserver.disconnect();
+      andObserver = null;
+    }
+
+    if (orObserver) {
+      orObserver.disconnect();
+      orObserver = null;
+    }
+  }
+
+  console.log('observers STOPPED:', mode);
+}
+
+function checkButtonStatesForObservers(isTagListChanged) {
+  const filterTagButtonAndActive = document
+    .getElementById('tag-filter-and-include')
+    .getAttribute('active');
+  const filterTagButtonOrActive = document
+    .getElementById('tag-filter-or-include')
+    .getAttribute('active');
+  const filterTagButtonOffActive = document
+    .getElementById('tag-filter-button-include-off')
+    .getAttribute('active');
+
+  console.log('filterTagButtonAndActive', filterTagButtonAndActive);
+  console.log('filterTagButtonOrActive', filterTagButtonOrActive);
+  console.log('filterTagButtonOffActive', filterTagButtonOffActive);
+
+  console.log(filterTagButtonAndActive === 'true');
+  console.log(filterTagButtonOrActive === 'true');
+  console.log(filterTagButtonOffActive === 'true');
+
+  const feedParent = document.querySelector('.scaffold-finite-scroll__content');
+
+  //undo previous observers to get ready for new ones
+  //when taglist is changed, need to stop previous observer to redo new one
+  if (isTagListChanged) {
+    showTagToIncludeAnd(feedParent);
+    showTagToIncludeOr(feedParent);
+    stopObservers('tag-filter-and-include');
+    stopObservers('tag-filter-or-include');
+    console.log('tag list changed');
+  } else {
+    console.log('tag list not changed');
+  }
+
+  if (filterTagButtonOffActive === 'true') {
+    //Shut down all filters and observers
+    stopObservers('tag-filter-button-include-off');
+  }
+
+  if (filterTagButtonAndActive === 'true') {
+    //activate ad filter
+    startObservers('tag-filter-and-include');
+  } else {
+    //deactivate ad filter
+    stopObservers('tag-filter-and-include');
+  }
+
+  if (filterTagButtonOrActive === 'true') {
+    console.log(
+      '🚀 ~ checkButtonStatesForObservers ~ filterTagButtonOrActive:',
+      filterTagButtonOrActive
+    );
+    //activate company filter
+    startObservers('tag-filter-or-include');
+  } else {
+    //deactivate company filter
+    stopObservers('tag-filter-or-include');
   }
 }

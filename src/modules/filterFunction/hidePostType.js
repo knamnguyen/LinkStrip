@@ -3,10 +3,12 @@ export function hideAd(feedParent) {
     ':scope > div:not(.promoted-hidden)'
   );
   if (!childDivs) return;
+
   childDivs.forEach((div) => {
     const links = div.getElementsByClassName(
-      'app-aware-link update-components-actor__meta-link'
+      'app-aware-link  update-components-actor__sub-description-link'
     );
+
     if (!links) return;
 
     for (let i = 0; i < links.length; i++) {
@@ -64,11 +66,8 @@ export function showCompany(feedParent) {
   if (!childDivs) return;
 
   childDivs.forEach((div) => {
-    if (div.className === 'company-hidden') {
-      div.hidden = false;
-      div.className = '';
-      console.log('COMPANY SHOWN' + div.ariaLabel);
-    }
+    div.hidden = false;
+    div.className = '';
   });
 }
 
@@ -92,8 +91,6 @@ export function showBanner(feedParent) {
   const postContainers = feedParent.querySelectorAll(
     '.feed-shared-update-v2.banner-hidden'
   );
-
-
 
   if (!postContainers) return;
 

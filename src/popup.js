@@ -69,7 +69,7 @@ const Popup = () => {
         <div className="flex flex-col justify-start">
           <h1 className="font-bold text-xl">LinkStrip</h1>
           <h2 className="text-sm">
-            Strip the shit of your LinkedIn feed. Fast. Easy. Free.
+            Strip the 💩 out of your LinkedIn feed. Fast. Easy. Free.
           </h2>
         </div>
       </div>
