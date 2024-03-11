@@ -149,7 +149,7 @@ export function CommandDemo() {
           <CommandItem>
             <StarFilledIcon className="mr-2 h-4 w-4" />
             <a
-              href="https://chrome.google.com/webstore/detail/pcokpfcijndejcfpekdegpbhieafchab/reviews "
+              href="https://chromewebstore.google.com/detail/pcokpfcijndejcfpekdegpbhieafchab/reviews "
               target="_blank"
             >
               Give 5* on store
