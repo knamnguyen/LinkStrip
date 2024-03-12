@@ -51,8 +51,9 @@ export function hideCompany(feedParent) {
       const ariaLabel = link.getAttribute('aria-label');
       if (
         ariaLabel &&
-        ariaLabel.includes('followers') &&
-        !ariaLabel.includes('Promoted')
+        ariaLabel.endsWith('followers')
+        // ariaLabel.includes('followers')
+        // !ariaLabel.includes('Promoted')
       ) {
         div.hidden = true;
         div.className = 'company-hidden';
