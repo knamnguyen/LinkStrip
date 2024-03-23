@@ -79,13 +79,25 @@ async function handleChangeAddNewButton() {
   ) {
     console.log('filter ADDING');
 
+    const theme = document.documentElement.classList.contains('theme--dark')
+      ? 'dark'
+      : 'light';
+
     //create container for tag filter
     const filterTagContainer = document.createElement('div');
     filterTagContainer.id = 'filter-tag-container';
     filterTagContainer.style.marginBottom = '10px';
-    filterTagContainer.style.backgroundColor = 'white';
-    // filterTagContainer.style.border = '10px solid ##eaeaea';
-    filterTagContainer.style.border = '1.25px solid #e0dfdb';
+
+    if (theme === 'dark') {
+      filterTagContainer.style.backgroundColor = '#1e1e1e';
+      filterTagContainer.style.border = '1.25px solid #3c3c3c';
+    } else {
+      filterTagContainer.style.backgroundColor = 'white';
+      filterTagContainer.style.border = '1.25px solid #e0dfdb';
+    }
+    // filterTagContainer.style.backgroundColor = 'white';
+    // // filterTagContainer.style.border = '10px solid ##eaeaea';
+    // filterTagContainer.style.border = '1.25px solid #e0dfdb';
     filterTagContainer.style.borderWidth = '1.25px';
     filterTagContainer.style.borderRadius = '8px';
     filterTagContainer.style.padding = '12px';
@@ -101,4 +113,3 @@ async function handleChangeAddNewButton() {
   //HIde irrelevant posts - put here so that affects observer
   // hideIrrelevantPosts();
 }
-

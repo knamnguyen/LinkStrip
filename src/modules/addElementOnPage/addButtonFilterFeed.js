@@ -20,6 +20,9 @@ export default function addButtonFilterFeed(container) {
   if (container.querySelector('#filter-button-container')) return;
 
   console.log('add button filter feed triggered');
+  const theme = document.documentElement.classList.contains('theme--dark')
+    ? 'dark'
+    : 'light';
 
   // Step 1: Create the div element
   var divElement = document.createElement('div');
@@ -107,9 +110,14 @@ export default function addButtonFilterFeed(container) {
   container.style.display = 'flex';
   container.style.position = 'sticky';
 
-  container.style.top = (75 - 52 + headerHeight).toString() + 'px';
+  container.style.top = (75 - 53.5 + headerHeight).toString() + 'px';
   container.style.zIndex = '10';
-  container.style.backgroundColor = '#f4f2ee';
+
+  if (theme === 'dark') {
+    container.style.backgroundColor = 'black';
+  } else {
+    container.style.backgroundColor = '#f4f2ee';
+  }
   container.style.borderRadius = '0 0 8px 8px';
   container.style.padding = '3px 5px';
   container.prepend(divElement);

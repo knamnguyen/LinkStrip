@@ -16,7 +16,9 @@ import {
 export default async function addTagFilterExclude(container) {
   if (!container) return;
   if (container.querySelector('#tag-filter-input-exclude-container')) return;
-
+  const theme = document.documentElement.classList.contains('theme--dark')
+    ? 'dark'
+    : 'light';
   //function to create new tag
   function createTag(text) {
     const tag = document.createElement('div');

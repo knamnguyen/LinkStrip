@@ -17,6 +17,9 @@ import {
 const iconPath = chrome.runtime.getURL('icons/ls-icon-512x512.png');
 
 export default async function addTagFilterInclude(container) {
+  const theme = document.documentElement.classList.contains('theme--dark')
+    ? 'dark'
+    : 'light';
   if (!container) return;
   if (container.querySelector('#tag-filter-input-container')) return;
 

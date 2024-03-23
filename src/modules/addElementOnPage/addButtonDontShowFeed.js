@@ -14,6 +14,9 @@ import {
 } from '../filterFunction/hidePostType.js';
 
 export default function addButtonDontShowFeed(container) {
+  const theme = document.documentElement.classList.contains('theme--dark')
+    ? 'dark'
+    : 'light';
   if (!container) return;
   if (document.getElementById('dontshow-button-container')) return;
 
@@ -119,7 +122,11 @@ export default function addButtonDontShowFeed(container) {
   parentDivElement.style.position = 'sticky';
   parentDivElement.style.top = `${headerHeight - 0.5}px`;
   parentDivElement.style.zIndex = '10';
-  parentDivElement.style.backgroundColor = 'rgb(244, 242, 238)';
+  if (theme === 'dark') {
+    parentDivElement.style.backgroundColor = 'rgb(0, 0, 0)';
+  } else {
+    parentDivElement.style.backgroundColor = 'rgb(244, 242, 238)';
+  }
   parentDivElement.style.padding = '3px 5px';
 
   parentDivElement.appendChild(divElement);
