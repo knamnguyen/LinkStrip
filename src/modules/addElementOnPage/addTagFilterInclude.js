@@ -274,26 +274,26 @@ export default async function addTagFilterInclude(container) {
   divElement.appendChild(dividerElement2);
   divElement.appendChild(filterButtonOff);
 
-  // Load the saved states of the buttons
-  const filterButtons = [
-    'tag-filter-and-include',
-    'tag-filter-or-include',
-    'tag-filter-button-include-off',
-  ];
+  // // Load the saved states of the buttons
+  // const filterButtons = [
+  //   'tag-filter-and-include',
+  //   'tag-filter-or-include',
+  //   'tag-filter-button-include-off',
+  // ];
 
-  for (const id of filterButtons) {
-    chrome.storage.local.get(id, (result) => {
-      const button = document.getElementById(id);
-      if (result[id]) {
-        activateButton(button);
-      } else {
-        deactivateButton(button);
-      }
+  // for (const id of filterButtons) {
+  //   chrome.storage.local.get(id, (result) => {
+  //     const button = document.getElementById(id);
+  //     if (result[id]) {
+  //       activateButton(button);
+  //     } else {
+  //       deactivateButton(button);
+  //     }
 
-      const isTagListChanged = false;
-      checkButtonStatesForObservers(isTagListChanged);
-    });
-  }
+  //     const isTagListChanged = false;
+  //     checkButtonStatesForObservers(isTagListChanged);
+  //   });
+  // }
 
   mainContainer.prepend(divElement);
   // Create the title container
@@ -317,6 +317,10 @@ export default async function addTagFilterInclude(container) {
   titleContainer.appendChild(textTitle);
   titleContainer.appendChild(linkButtonKyNam);
   mainContainer.prepend(titleContainer);
+
+  //defult state of the button to off
+  activateButton(document.getElementById('tag-filter-button-include-off'));
+  checkButtonStatesForObservers();
 }
 
 //ON OFF BUTTON HANDDLING

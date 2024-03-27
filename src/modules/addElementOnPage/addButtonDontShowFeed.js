@@ -75,26 +75,26 @@ export default function addButtonDontShowFeed(container) {
   divElement.appendChild(dividerElement3);
   divElement.appendChild(hideButtonOff);
 
-  // load initial state of buttons
-  const hideButtons = [
-    'hide-button-ad',
-    'hide-button-company',
-    'hide-button-linkedin-banner',
-    'hide-button-off',
-  ];
+  // // load initial state of buttons
+  // const hideButtons = [
+  //   'hide-button-ad',
+  //   'hide-button-company',
+  //   'hide-button-linkedin-banner',
+  //   'hide-button-off',
+  // ];
 
-  for (const id of hideButtons) {
-    chrome.storage.local.get([id], function (result) {
-      const button = document.getElementById(id);
-      if (result[id]) {
-        activateButton(button);
-        checkButtonStatesForObservers();
-      } else {
-        deactivateButton(button);
-        checkButtonStatesForObservers();
-      }
-    });
-  }
+  // for (const id of hideButtons) {
+  //   chrome.storage.local.get([id], function (result) {
+  //     const button = document.getElementById(id);
+  //     if (result[id]) {
+  //       activateButton(button);
+  //       checkButtonStatesForObservers();
+  //     } else {
+  //       deactivateButton(button);
+  //       checkButtonStatesForObservers();
+  //     }
+  //   });
+  // }
 
   //get the buttons that are active based on the initial state
 
@@ -133,6 +133,10 @@ export default function addButtonDontShowFeed(container) {
   parentDivElement.appendChild(linkButtonKyNam);
 
   container.before(parentDivElement);
+
+  //defult state of the button to off
+  activateButton(document.getElementById('hide-button-off'));
+  checkButtonStatesForObservers();
 }
 
 //everytime a button is clicked, must reset the observer

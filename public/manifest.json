@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "LinkStrip - Strip the 💩 from your LinkedIn feed",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "What's up, LinkedIn afficionado?",
   "icons": {
     "16": "icons/ls-icon-16x16.png",

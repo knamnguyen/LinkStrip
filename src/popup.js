@@ -53,7 +53,7 @@ export function AvatarDemo() {
   return (
     <Avatar className="h-16 w-16 border-2 border-stone-950">
       <AvatarImage
-        src="https://media.licdn.com/dms/image/D5603AQGQW2ZzqPrtjg/profile-displayphoto-shrink_800_800/0/1692444763039?e=1715212800&v=beta&t=NoT6MCKwgp0w_k8F7ZcHk92OIYhIsDCizhf7pfv1dGg"
+        src="https://media.licdn.com/dms/image/D5603AQFZkN8Wwc4TOA/profile-displayphoto-shrink_800_800/0/1710815940683?e=1717027200&v=beta&t=HCR-HDFvCxeeuibMClhzj7OfIVnhCfucUvOK3lEJHBA"
         alt="@shadcn"
       />
       <AvatarFallback>KN</AvatarFallback>
@@ -88,39 +88,52 @@ const Popup = () => {
             </span>
           </div>
         </div>
-
         <div>
           <div className="mt-4"></div>
           <CommandDemo />
         </div>
-        <Accordion
+        <div className="mt-8 font-bold text-center text-lg	">
+          IMPORTANT NOTE!!!
+        </div>
+        {/* <Accordion
           type="single"
           collapsible
           className="self-start whitespace-pre-wrap"
-        >
-          <AccordionItem value="item-1">
+        > */}
+        {/* <AccordionItem value="item-1">
             <AccordionTrigger>Note/Update</AccordionTrigger>
-            <AccordionContent className="whitespace-break-spaces">
-              - If you see too few posts loaded, try using more flexible
-              filters. <br />
-              <br />- For filter tag Include/Exclude, try to always use mode OR.{' '}
-              <br />
-              <br />- For filter tags Include, try to define as many relevant
-              tags as possible.
-              <br />
-              <br />- For filter tags Exclude, try to define as few tags as
-              possible. <br />
-              <br />- Sometimes, it feels like LinkStrip makes LinkedIn loads
-              slower.But it's usually because there's no more posts to load that
-              meets the criteria, and LinkedIn is trying to fetch more posts.
-              <br />
-              <br />- I don't recommend using Include tag filters with only a
-              few keywords and mode AND. This will make the filter very
-              aggressive and hide most posts, causing the feed to be empty. If
-              you think this is nice, then good.
-            </AccordionContent>
+            <AccordionContent className="whitespace-break-spaces"> */}
+        - LinkedIn doensn't like it when you hide ads from newsfeed. To avoid
+        getting restricted, all filters will be reset to "Off" by default. You
+        are advised to:
+        <strong>
+          *Only use the filter when needing to scroll through relevant posts for
+          commenting.
+        </strong>
+        <strong>
+          *If your account gets a warning, stop using the filter for 2 days,
+          before using it again.
+        </strong>
+        <br />- If you see too few posts loaded, try using more flexible
+        filters. <br />
+        <br />- For filter tag Include/Exclude, try to always use mode OR.{' '}
+        <br />
+        <br />- For filter tags Include, try to define as many relevant tags as
+        possible.
+        <br />
+        <br />- For filter tags Exclude, try to define as few tags as possible.{' '}
+        <br />
+        <br />- Sometimes, it feels like LinkStrip makes LinkedIn loads
+        slower.But it's usually because there's no more posts to load that meets
+        the criteria, and LinkedIn is trying to fetch more posts.
+        <br />
+        <br />- I don't recommend using Include tag filters with only a few
+        keywords and mode AND. This will make the filter very aggressive and
+        hide most posts, causing the feed to be empty. If you think this is
+        nice, then good.
+        {/* </AccordionContent>
           </AccordionItem>
-        </Accordion>
+        </Accordion> */}
       </div>
     </div>
   );

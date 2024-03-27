@@ -4,30 +4,7 @@ import addTagFilterInclude from './modules/addElementOnPage/addTagFilterInclude.
 import addTagFilterExclude from './modules/addElementOnPage/addTagFilterExclude.js';
 
 import './popup.css';
-import waitForElement from './modules/utils/waitForElement.js';
-import throttle from './modules/utils/throttle.js';
-import sleep from './modules/utils/sleep.js';
 
-// document.addEventListener('DOMContentLoaded', () => {
-//   handleChangeAddNewButton();
-//   // Listen for popstate events, which are triggered by back/forward navigation
-//   window.addEventListener('popstate', () => {
-//     handleChangeAddNewButton();
-//   });
-// });
-// handleChangeAddNewButton();
-
-// //body contains both the post feed and the react modal should it appear
-// const handleChangeAddNewButtonThrottled = throttle(
-//   handleChangeAddNewButton,
-//   200
-// );
-
-// let feedObserve = new MutationObserver(handleChangeAddNewButtonThrottled);
-// const config = {
-//   childList: true,
-//   subtree: true,
-// };
 
 function handleUrlChange(url) {
   // feedObserve.disconnect();

@@ -77,42 +77,43 @@ export default function addButtonFilterFeed(container) {
   divElement.appendChild(dividerElement3);
   divElement.appendChild(filterButtonOff);
 
-  // Load the saved states of the buttons
-  const filterButtons = [
-    'filter-button-last-60',
-    'filter-button-last-12',
-    'filter-button-last-day',
-    'filter-button-off',
-  ];
+  // // Load the saved states of the buttons
+  // const filterButtons = [
+  //   'filter-button-last-60',
+  //   'filter-button-last-12',
+  //   'filter-button-last-day',
+  //   'filter-button-off',
+  // ];
 
-  for (const id of filterButtons) {
-    chrome.storage.local.get(id, (result) => {
-      const button = document.getElementById(id);
-      if (result[id]) {
-        activateButton(button);
-        checkButtonStatesForObservers();
-        // activate initial observers
-        //get saved states of the buttons
-      } else {
-        deactivateButton(button);
-        checkButtonStatesForObservers();
-      }
-    });
-  }
+  // for (const id of filterButtons) {
+  //   chrome.storage.local.get(id, (result) => {
+  //     const button = document.getElementById(id);
+  //     if (result[id]) {
+  //       activateButton(button);
+  //       checkButtonStatesForObservers();
+  //       // activate initial observers
+  //       //get saved states of the buttons
+  //     } else {
+  //       deactivateButton(button);
+  //       checkButtonStatesForObservers();
+  //     }
+  //   });
+  // }
 
+  
   //get header's height
   // const header = document.getElementsByTagName('header')[0];
   const header = document.getElementById('global-nav');
   const headerHeight = header.offsetHeight;
   console.log('headerHeight', headerHeight);
-
+  
   //add div as the first child of container
   container.style.display = 'flex';
   container.style.position = 'sticky';
-
+  
   container.style.top = (75 - 53.5 + headerHeight).toString() + 'px';
   container.style.zIndex = '10';
-
+  
   if (theme === 'dark') {
     container.style.backgroundColor = 'black';
   } else {
@@ -121,6 +122,9 @@ export default function addButtonFilterFeed(container) {
   container.style.borderRadius = '0 0 8px 8px';
   container.style.padding = '3px 5px';
   container.prepend(divElement);
+  //defult state of the button to off
+  activateButton(document.getElementById('filter-button-off'));
+  checkButtonStatesForObservers();
 }
 
 function handleClickFilter(mode) {
@@ -130,12 +134,12 @@ function handleClickFilter(mode) {
     'filter-button-last-day',
     'filter-button-off',
   ];
-
+  
   const offButton = document.getElementById('filter-button-off');
-
+  
   for (const id of filterButtons) {
     const button = document.getElementById(id);
-
+    
     if (id === mode) {
       if (id === 'filter-button-off') {
         // If 'off' button is clicked while active, do nothing
