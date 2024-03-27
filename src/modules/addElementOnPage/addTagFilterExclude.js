@@ -269,32 +269,40 @@ export default async function addTagFilterExclude(container) {
   divElement.appendChild(dividerElement2);
   divElement.appendChild(filterButtonOffExclude);
 
-  // // Load the saved states of the buttons
-  // const filterButtons = [
-  //   'tag-filter-and-exclude',
-  //   'tag-filter-or-exclude',
-  //   'tag-filter-button-exclude-off',
-  // ];
+  // Load the saved states of the buttons
+  const filterButtons = [
+    'tag-filter-and-exclude',
+    'tag-filter-or-exclude',
+    'tag-filter-button-exclude-off',
+  ];
 
-  // for (const id of filterButtons) {
-  //   chrome.storage.local.get(id, (result) => {
-  //     const button = document.getElementById(id);
-  //     if (result[id]) {
-  //       activateButton(button);
-  //     } else {
-  //       deactivateButton(button);
-  //     }
+  let prevButtonStatesExist = false;
 
-  //     const isTagListChanged = false;
-  //     checkButtonStatesForObservers(isTagListChanged);
-  //   });
+  for (const id of filterButtons) {
+    chrome.storage.local.get(id, (result) => {
+      const button = document.getElementById(id);
+      if (result[id]) {
+        activateButton(button);
+        prevButtonStatesExist = true;
+      } else {
+        deactivateButton(button);
+      }
+
+      const isTagListChanged = false;
+      checkButtonStatesForObservers(isTagListChanged);
+    });
+  }
+
+  // if (!prevButtonStatesExist) {
+  //   // If no previous button states exist, set the default state of the 'Off' button
+  //   activateButton(filterButtonOffExclude);
   // }
 
   mainContainer.prepend(divElement);
 
-  //defult state of the button to off
-  activateButton(document.getElementById('tag-filter-button-exclude-off'));
-  checkButtonStatesForObservers();
+  // //defult state of the button to off
+  // activateButton(document.getElementById('tag-filter-button-exclude-off'));
+  // checkButtonStatesForObservers();
 }
 
 //ON OFF BUTTON HANDDLING

@@ -14,7 +14,8 @@ import {
 } from '../filterFunction/hidePostInclude.js';
 
 //import icon for extension
-const iconPath = chrome.runtime.getURL('icons/ls-icon-512x512.png');
+const iconPath =
+  'https://media.licdn.com/dms/image/D5622AQFmVnZvu3K79Q/feedshare-shrink_800/0/1711556778258?e=1714608000&v=beta&t=gCN-eakaO8GalO8kO9VmVGanAGHWFyZBEcG9R9nQILE';
 
 export default async function addTagFilterInclude(container) {
   const theme = document.documentElement.classList.contains('theme--dark')
@@ -274,25 +275,32 @@ export default async function addTagFilterInclude(container) {
   divElement.appendChild(dividerElement2);
   divElement.appendChild(filterButtonOff);
 
-  // // Load the saved states of the buttons
-  // const filterButtons = [
-  //   'tag-filter-and-include',
-  //   'tag-filter-or-include',
-  //   'tag-filter-button-include-off',
-  // ];
+  // Load the saved states of the buttons
+  const filterButtons = [
+    'tag-filter-and-include',
+    'tag-filter-or-include',
+    'tag-filter-button-include-off',
+  ];
 
-  // for (const id of filterButtons) {
-  //   chrome.storage.local.get(id, (result) => {
-  //     const button = document.getElementById(id);
-  //     if (result[id]) {
-  //       activateButton(button);
-  //     } else {
-  //       deactivateButton(button);
-  //     }
+  var prevButtonStatesExist = false;
 
-  //     const isTagListChanged = false;
-  //     checkButtonStatesForObservers(isTagListChanged);
-  //   });
+  for (const id of filterButtons) {
+    chrome.storage.local.get(id, (result) => {
+      const button = document.getElementById(id);
+      if (result[id]) {
+        activateButton(button);
+        prevButtonStatesExist = true;
+      } else {
+        deactivateButton(button);
+      }
+
+      const isTagListChanged = false;
+      checkButtonStatesForObservers(isTagListChanged);
+    });
+  }
+
+  // if (!prevButtonStatesExist) {
+  //   activateButton(filterButtonOff);
   // }
 
   mainContainer.prepend(divElement);
@@ -317,10 +325,6 @@ export default async function addTagFilterInclude(container) {
   titleContainer.appendChild(textTitle);
   titleContainer.appendChild(linkButtonKyNam);
   mainContainer.prepend(titleContainer);
-
-  //defult state of the button to off
-  activateButton(document.getElementById('tag-filter-button-include-off'));
-  checkButtonStatesForObservers();
 }
 
 //ON OFF BUTTON HANDDLING

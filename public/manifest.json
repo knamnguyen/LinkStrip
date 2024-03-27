@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "LinkStrip - Strip the 💩 from your LinkedIn feed",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "What's up, LinkedIn afficionado?",
   "icons": {
     "16": "icons/ls-icon-16x16.png",
@@ -25,12 +25,6 @@
       "matches": ["https://www.linkedin.com/feed/*"],
       "run_at": "document_idle",
       "js": ["contentScript.js"]
-    }
-  ],
-  "web_accessible_resources": [
-    {
-      "resources": ["icons/ls-icon-512x512.png"],
-      "matches": ["https://www.linkedin.com/*"]
     }
   ]
 }

@@ -42,24 +42,24 @@ export default function addButtonDontShowFeed(container) {
 
   // Usage example:
   var hideButtonAd = createButton(
-    'hide-button-ad',
+    'shit-button-noise',
     'Promoted',
     handleClickHide
   );
   var dividerElement1 = createDivider();
   var hideButtonCompany = createButton(
-    'hide-button-company',
+    'shit-button-corporate',
     'Company',
     handleClickHide
   );
   var dividerElement2 = createDivider();
   var hideButtonLinkedinBanner = createButton(
-    'hide-button-linkedin-banner',
+    'shit-button-job-baner',
     'Banner',
     handleClickHide
   );
   var dividerElement3 = createDivider();
-  var hideButtonOff = createButton('hide-button-off', 'Off', handleClickHide);
+  var hideButtonOff = createButton('shit-button-off', 'Off', handleClickHide);
   var dividerElement4 = createDivider();
   var linkButtonKyNam = createButton('link-button-kynam', 'Say Hi 🙋‍♂️', () => {
     window.open('https://ko-fi.com/kynam', '_blank');
@@ -76,24 +76,31 @@ export default function addButtonDontShowFeed(container) {
   divElement.appendChild(hideButtonOff);
 
   // // load initial state of buttons
-  // const hideButtons = [
-  //   'hide-button-ad',
-  //   'hide-button-company',
-  //   'hide-button-linkedin-banner',
-  //   'hide-button-off',
-  // ];
+  const hideButtons = [
+    'shit-button-noise',
+    'shit-button-corporate',
+    'shit-button-job-baner',
+    'shit-button-off',
+  ];
 
-  // for (const id of hideButtons) {
-  //   chrome.storage.local.get([id], function (result) {
-  //     const button = document.getElementById(id);
-  //     if (result[id]) {
-  //       activateButton(button);
-  //       checkButtonStatesForObservers();
-  //     } else {
-  //       deactivateButton(button);
-  //       checkButtonStatesForObservers();
-  //     }
-  //   });
+  let prevButtonStatesExist = false;
+
+  for (const id of hideButtons) {
+    chrome.storage.local.get([id], function (result) {
+      const button = document.getElementById(id);
+      if (result[id]) {
+        activateButton(button);
+        checkButtonStatesForObservers();
+        prevButtonStatesExist = true;
+      } else {
+        deactivateButton(button);
+        checkButtonStatesForObservers();
+      }
+    });
+  }
+
+  // if (!prevButtonStatesExist) {
+  //   activateButton(hideButtonOff);
   // }
 
   //get the buttons that are active based on the initial state
@@ -133,10 +140,6 @@ export default function addButtonDontShowFeed(container) {
   parentDivElement.appendChild(linkButtonKyNam);
 
   container.before(parentDivElement);
-
-  //defult state of the button to off
-  activateButton(document.getElementById('hide-button-off'));
-  checkButtonStatesForObservers();
 }
 
 //everytime a button is clicked, must reset the observer
@@ -146,25 +149,25 @@ function handleClickHide(mode) {
   //prev mode
 
   const hideButtons = [
-    'hide-button-ad',
-    'hide-button-company',
-    'hide-button-linkedin-banner',
-    'hide-button-off',
+    'shit-button-noise',
+    'shit-button-corporate',
+    'shit-button-job-baner',
+    'shit-button-off',
   ];
 
-  const offButton = document.getElementById('hide-button-off');
+  const offButton = document.getElementById('shit-button-off');
 
   for (const id of hideButtons) {
     const button = document.getElementById(id);
 
     if (id === mode) {
-      if (id === 'hide-button-off') {
+      if (id === 'shit-button-off') {
         // If 'off' button is clicked while active, do nothing
         if (!button.classList.contains('t-bold')) {
           activateButton(button);
           // Deactivate all other buttons
           for (const otherId of hideButtons) {
-            if (otherId !== 'hide-button-off') {
+            if (otherId !== 'shit-button-off') {
               const otherButton = document.getElementById(otherId);
               deactivateButton(otherButton);
             }
@@ -186,7 +189,7 @@ function handleClickHide(mode) {
 
   // After all buttons have been processed, check if 'off' button should be activated
   const anyButtonActive = hideButtons.some((id) => {
-    if (id === 'hide-button-off') return false; // Ignore 'off' button in this check
+    if (id === 'shit-button-off') return false; // Ignore 'off' button in this check
     const button = document.getElementById(id);
     return button.classList.contains('t-bold');
   });
@@ -212,7 +215,7 @@ function startObservers(mode) {
   const config = { childList: true, subtree: true };
 
   // Observer for ads
-  if (!adObserver && mode === 'hide-button-ad') {
+  if (!adObserver && mode === 'shit-button-noise') {
     hideAd(feedParent);
     adObserver = new MutationObserver((mutations) => {
       hideAd(feedParent);
@@ -221,7 +224,7 @@ function startObservers(mode) {
   }
 
   // Observer for companies
-  if (!companyObserver && mode === 'hide-button-company') {
+  if (!companyObserver && mode === 'shit-button-corporate') {
     hideCompany(feedParent);
     companyObserver = new MutationObserver((mutations) => {
       hideCompany(feedParent);
@@ -230,7 +233,7 @@ function startObservers(mode) {
   }
 
   // Observer for banners
-  if (!bannerObserver && mode === 'hide-button-linkedin-banner') {
+  if (!bannerObserver && mode === 'shit-button-job-baner') {
     hideBanner(feedParent);
     bannerObserver = new MutationObserver((mutations) => {
       hideBanner(feedParent);
@@ -246,23 +249,23 @@ function stopObservers(mode) {
   //get parent of the feed
   const feedParent = document.querySelector('.scaffold-finite-scroll__content');
 
-  if (adObserver && mode === 'hide-button-ad') {
+  if (adObserver && mode === 'shit-button-noise') {
     adObserver.disconnect();
     adObserver = null;
     showAd(feedParent);
   }
-  if (companyObserver && mode === 'hide-button-company') {
+  if (companyObserver && mode === 'shit-button-corporate') {
     companyObserver.disconnect();
     companyObserver = null;
     showCompany(feedParent);
   }
-  if (bannerObserver && mode === 'hide-button-linkedin-banner') {
+  if (bannerObserver && mode === 'shit-button-job-baner') {
     bannerObserver.disconnect();
     bannerObserver = null;
     showBanner(feedParent);
   }
 
-  if (mode === 'hide-button-off') {
+  if (mode === 'shit-button-off') {
     if (adObserver) {
       adObserver.disconnect();
       adObserver = null;
@@ -285,16 +288,16 @@ function stopObservers(mode) {
 
 function checkButtonStatesForObservers() {
   const hideButtonAdActive = document
-    .getElementById('hide-button-ad')
+    .getElementById('shit-button-noise')
     .getAttribute('active');
   const hideButtonCompanyActive = document
-    .getElementById('hide-button-company')
+    .getElementById('shit-button-corporate')
     .getAttribute('active');
   const hideButtonLinkedinBannerActive = document
-    .getElementById('hide-button-linkedin-banner')
+    .getElementById('shit-button-job-baner')
     .getAttribute('active');
   const hideButtonOffActive = document
-    .getElementById('hide-button-off')
+    .getElementById('shit-button-off')
     .getAttribute('active');
 
   console.log('hideButtonAdActive', hideButtonAdActive);
@@ -304,30 +307,30 @@ function checkButtonStatesForObservers() {
 
   if (hideButtonOffActive === 'true') {
     //Shut down all filters and observers
-    stopObservers('hide-button-off');
+    stopObservers('shit-button-off');
   }
 
   if (hideButtonAdActive === 'true') {
     //activate ad filter
-    startObservers('hide-button-ad');
+    startObservers('shit-button-noise');
   } else {
     //deactivate ad filter
-    stopObservers('hide-button-ad');
+    stopObservers('shit-button-noise');
   }
 
   if (hideButtonCompanyActive === 'true') {
     //activate company filter
-    startObservers('hide-button-company');
+    startObservers('shit-button-corporate');
   } else {
     //deactivate company filter
-    stopObservers('hide-button-company');
+    stopObservers('shit-button-corporate');
   }
 
   if (hideButtonLinkedinBannerActive === 'true') {
     //activate linkedin banner filter
-    startObservers('hide-button-linkedin-banner');
+    startObservers('shit-button-job-baner');
   } else {
     //deactivate linkedin banner filter
-    stopObservers('hide-button-linkedin-banner');
+    stopObservers('shit-button-job-baner');
   }
 }
